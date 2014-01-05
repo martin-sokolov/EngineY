@@ -1,0 +1,30 @@
+<% if @page %>
+	<% layouts = @page.widget_layouts %>
+	<% layouts.each do |layout| %>
+		<% layout.widget_name = Widget.find(layout.widget_id).name %>
+	<% end %>
+<% end %>
+
+<script type="text/javascript">
+	if(typeof page_data === "undefined") {
+		page_data = {};
+	}
+	page_data.widgets = new PageWidgets();
+	<% if layouts && layouts.length > 0 %>
+		page_data.widgets.init_widgets('<%= layouts.to_json(:methods => :widget_name) %>');
+	<% else %>
+		var widgets = [];
+	<% end %>
+	
+	<% if @user %>
+		var user_id = <%= @user.id %>;
+	<% else %>
+		var user_id = null;
+	<% end %>
+	
+	<% if @group %>
+		var group_id = <%= @group.id %>;
+	<% else %>
+		var group_id = null;
+	<% end %>
+</script>

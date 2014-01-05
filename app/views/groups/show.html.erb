@@ -1,0 +1,71 @@
+<%#
+Copyright 2009-2010 Timothy Fisher
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+%>
+<%= stylesheet_link_tag 'groups' %>
+<%= stylesheet_link_tag 'profile' %>
+
+<% content_for :script_content do %>
+	<%= javascript_include_tag 'wall_posts' %>
+<% end %>
+	
+<div class="group_title"><%= @group.name %></div>
+<div class="col1">
+	<div class="profile">
+		<div class="column_1">
+			<div class="module">
+				<div class="module_head">
+					Information
+					<div class="head_links">
+					</div>
+				</div>
+				<div class="module_body">
+					<div id="group_photo">
+						<% if (@group.profile_photo) %>
+							<%= image_tag(@group.profile_photo.public_filename()) %>
+						<% else %>
+							No Photo
+						<% end %>
+					</div>
+					<div id="group_description">
+						<%= @group.description %>
+					</div>
+					<div style="clear:both"></div>
+				</div>
+			</div>
+			<% if logged_in? && current_user.is_group_admin(@group) %>
+				<%= render :partial => 'group_admin_widget' %>
+			<% end %>
+			<div id="col_1_widgets"></div>
+		</div>
+		<div class="column_2">
+			<div class="module">
+				<% if logged_in? %>
+					<% unless @group.users.include?(current_user) %>
+						<% form_for(:membership, :url => memberships_path(:user_id => current_user.id, :group_id => @group.id)) do |f| %>
+							<%= submit_tag "Join Group" %>
+						<% end %>
+					<% end %>
+				<% end %> 
+			</div>
+			<div id="col_2_widgets"></div>
+		</div>
+	</div>
+</div>
+<div class="col2">
+	<%= render :partial => 'users/user_control_widget' %>
+	<div id="col_3_widgets"></div>
+</div>
+<div style="clear:both;"></div>
+
